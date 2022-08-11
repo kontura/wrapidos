@@ -126,7 +126,7 @@ fn build_ui(app: &Application) {
     let scrolled_window = ScrolledWindow::builder()
         .hscrollbar_policy(PolicyType::Never) // Disable horizontal scrolling
         .min_content_width(360)
-        .min_content_height(560)
+        .propagate_natural_height(true)
         .child(&list_box)
         .build();
 
