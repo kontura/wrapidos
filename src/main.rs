@@ -78,9 +78,27 @@ fn build_ui(app: &Application) {
     row.append(&from_line);
     // Create a title label
     row.append(&input_field_from);
+
+    let between_inputs_box = gtk::Box::builder()
+        .orientation(gtk::Orientation::Horizontal)
+        .build();
+
     let to_line = Label::new(Some("To:"));
-    to_line.set_halign(gtk::Align::Start);
-    row.append(&to_line);
+    //to_line.set_halign(gtk::Align::Start);
+    between_inputs_box.append(&to_line);
+
+    let swap_button = gtk::Button::builder().label("<-->").margin_start(50).build();
+    let input_field_to_copy = input_field_to.clone();
+    let input_field_from_copy = input_field_from.clone();
+    swap_button.connect_clicked(move |_| {
+        let tmp = input_field_to_copy.buffer();
+        input_field_to_copy.set_buffer(&input_field_from_copy.buffer());
+        input_field_from_copy.set_buffer(&tmp);
+    });
+
+    between_inputs_box.append(&swap_button);
+    row.append(&between_inputs_box);
+
     row.append(&input_field_to);
 
     list_box.append(&row);
