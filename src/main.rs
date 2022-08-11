@@ -34,7 +34,9 @@ fn load_css() {
 }
 
 fn build_ui(app: &Application) {
-    let list_box = ListBox::new();
+    let search_box = gtk::Box::builder()
+        .orientation(gtk::Orientation::Vertical)
+        .build();
 
     // Create an EntryCompletion widget
     let from_stations = gtk::EntryCompletion::new();
@@ -101,16 +103,18 @@ fn build_ui(app: &Application) {
 
     row.append(&input_field_to);
 
-    list_box.append(&row);
+    search_box.append(&row);
 
     // Create a button with label
     let button = gtk::Button::builder().label("Search!").build();
-    list_box.append(&button);
+    search_box.append(&button);
 
+    let list_box = ListBox::new();
     // Connect to "clicked" signal of `button`
     // TODO(amatej): is there a cycle? button doesn't need to be in listbox..
     let list_box_copy = list_box.clone();
     button.connect_clicked(move |_| {
+        //TODO(amatej): clear the listbox
         let html = curl_idos::curl_idos(input_field_from.text().to_string(), input_field_to.text().to_string());
         let vec_of_connections = parse_idos::parse_idos(&html);
         for route in &vec_of_connections {
@@ -122,8 +126,15 @@ fn build_ui(app: &Application) {
     let scrolled_window = ScrolledWindow::builder()
         .hscrollbar_policy(PolicyType::Never) // Disable horizontal scrolling
         .min_content_width(360)
+        .min_content_height(560)
         .child(&list_box)
         .build();
+
+    let main_box = gtk::Box::builder()
+        .orientation(gtk::Orientation::Vertical)
+        .build();
+    main_box.append(&search_box);
+    main_box.append(&scrolled_window);
 
     // Create a window
     let window = ApplicationWindow::builder()
@@ -131,7 +142,7 @@ fn build_ui(app: &Application) {
         .title("WrapIdos")
         .default_width(300)
         .default_height(600)
-        .child(&scrolled_window)
+        .child(&main_box)
         .build();
 
     // Present window
