@@ -14,7 +14,7 @@ pub fn curl_idos(from: String, to: String) -> String {
     easy.get(true).unwrap();
     let encoded_from = urlencoding::encode(&from);
     let encoded_to = urlencoding::encode(&to);
-    let str_url = &format!("https://idos.idnes.cz/vlakyautobusymhdvse/spojeni/vysledky/?f={}&fc=8&t={}&tc=8", encoded_from, encoded_to);
+    let str_url = &format!("https://idos.idnes.cz/vlakyautobusymhdvse/spojeni/vysledky/?f={}&t={}", encoded_from, encoded_to);
     println!("{}", str_url);
     easy.url(&str_url).unwrap();
     easy.perform().unwrap();
