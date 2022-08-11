@@ -39,12 +39,12 @@ fn build_ui(app: &Application) {
     // Create an EntryCompletion widget
     let from_stations = gtk::EntryCompletion::new();
     from_stations.set_text_column(0);
-    from_stations.set_minimum_key_length(5);
+    from_stations.set_minimum_key_length(1);
     from_stations.set_popup_completion(true);
 
     let to_stations = gtk::EntryCompletion::new();
     to_stations.set_text_column(0);
-    to_stations.set_minimum_key_length(5);
+    to_stations.set_minimum_key_length(1);
     to_stations.set_popup_completion(true);
 
     // Create a ListStore of items
