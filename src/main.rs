@@ -59,10 +59,12 @@ fn build_ui(app: &Application) {
     let input_field_from = gtk::Entry::new();
     input_field_from.set_completion(Some(&from_stations));
     input_field_from.set_margin_bottom(10);
+    input_field_from.set_buffer(&gtk::EntryBuffer::new(Some("Slovanske Namesti")));
 
     let input_field_to = gtk::Entry::new();
     input_field_to.set_completion(Some(&to_stations));
     input_field_to.set_margin_bottom(10);
+    input_field_to.set_buffer(&gtk::EntryBuffer::new(Some("Uvoz")));
 
     let row = gtk::Box::builder()
         .orientation(gtk::Orientation::Vertical)
