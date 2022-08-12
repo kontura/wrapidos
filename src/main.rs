@@ -1,6 +1,8 @@
 use gtk::gdk::Display;
-use gtk::prelude::*;
-use gtk::{Application, ApplicationWindow, Label, ListBox, PolicyType, ScrolledWindow, CssProvider, StyleContext};
+use adw::prelude::*;
+
+use adw::{ActionRow, Application, ApplicationWindow, HeaderBar};
+use gtk::{Box, ListBox, Orientation, SelectionMode, CssProvider, StyleContext, Label};
 use gtk::glib::Type;
 
 mod curl_idos;
@@ -109,7 +111,17 @@ fn build_ui(app: &Application) {
     let button = gtk::Button::builder().label("Search!").build();
     search_box.append(&button);
 
-    let list_box = ListBox::new();
+    let list_box = ListBox::builder()
+        .margin_top(32)
+        .margin_end(32)
+        .margin_bottom(32)
+        .margin_start(32)
+        .selection_mode(SelectionMode::None)
+        // makes the list look nicer
+        .css_classes(vec![String::from("boxed-list")])
+        .build();
+
+
     // Connect to "clicked" signal of `button`
     let list_box_copy = list_box.clone();
     button.connect_clicked(move |_| {
@@ -127,18 +139,12 @@ fn build_ui(app: &Application) {
         }
     });
 
-    let scrolled_window = ScrolledWindow::builder()
-        .hscrollbar_policy(PolicyType::Never) // Disable horizontal scrolling
-        .min_content_width(360)
-        .propagate_natural_height(true)
-        .child(&list_box)
-        .build();
+    let content = Box::new(Orientation::Vertical, 0);
+        // Adwaitas' ApplicationWindow does not include a HeaderBar
+    content.append(&HeaderBar::new());
 
-    let main_box = gtk::Box::builder()
-        .orientation(gtk::Orientation::Vertical)
-        .build();
-    main_box.append(&search_box);
-    main_box.append(&scrolled_window);
+    content.append(&search_box);
+    content.append(&list_box);
 
     // Create a window
     let window = ApplicationWindow::builder()
@@ -146,7 +152,7 @@ fn build_ui(app: &Application) {
         .title("WrapIdos")
         .default_width(300)
         .default_height(600)
-        .child(&main_box)
+        .content(&content)
         .build();
 
     // Present window
@@ -167,10 +173,7 @@ fn build_route(route: &Vec<parse_idos::Connection>) -> gtk::Box {
         let name_label = Label::new(Some(&connection.name));
         let from_label = Label::new(Some(&[connection.departure_time.clone(), connection.departure_station.clone()].join(" ")));
         let to_label = Label::new(Some(&[connection.destination_time.clone(), connection.destination_station.clone()].join(" ")));
-        name_label.set_halign(gtk::Align::Start);
-        from_label.set_halign(gtk::Align::Start);
         from_label.set_margin_start(10);
-        to_label.set_halign(gtk::Align::Start);
         to_label.set_margin_start(10);
         connection_row.append(&name_label);
         connection_row.append(&from_label);
