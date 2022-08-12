@@ -169,7 +169,9 @@ fn build_route(route: &Vec<parse_idos::Connection>) -> gtk::Box {
     let mut first: bool = true;
     for connection in route {
         if !first {
-            full_route_row.append(&gtk::Separator::builder().build());
+            full_route_row.append(&gtk::Separator::builder()
+                                  .opacity(0.3)
+                                  .build());
         }
         let connection_row = gtk::Box::builder()
             .orientation(gtk::Orientation::Vertical)
