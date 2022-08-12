@@ -1,7 +1,7 @@
 use gtk::gdk::Display;
 use adw::prelude::*;
 
-use adw::{ActionRow, Application, ApplicationWindow, HeaderBar};
+use adw::{Application, ApplicationWindow, HeaderBar};
 use gtk::{Box, ListBox, Orientation, SelectionMode, CssProvider, StyleContext, Label};
 use gtk::glib::Type;
 
