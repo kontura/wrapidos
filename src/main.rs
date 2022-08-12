@@ -70,7 +70,7 @@ fn build_ui(app: &Application) {
     input_field_to.set_margin_bottom(10);
     input_field_to.set_buffer(&gtk::EntryBuffer::new(Some("Brno,,Úvoz")));
 
-    let row = gtk::Box::builder()
+    let inputs = gtk::Box::builder()
         .orientation(gtk::Orientation::Vertical)
         .spacing(12)
         .margin_start(24)
@@ -79,9 +79,9 @@ fn build_ui(app: &Application) {
 
     let from_line = Label::new(Some("From:"));
     from_line.set_halign(gtk::Align::Start);
-    row.append(&from_line);
+    inputs.append(&from_line);
     // Create a title label
-    row.append(&input_field_from);
+    inputs.append(&input_field_from);
 
     let between_inputs_box = gtk::Box::builder()
         .orientation(gtk::Orientation::Horizontal)
@@ -101,11 +101,11 @@ fn build_ui(app: &Application) {
     });
 
     between_inputs_box.append(&swap_button);
-    row.append(&between_inputs_box);
+    inputs.append(&between_inputs_box);
 
-    row.append(&input_field_to);
+    inputs.append(&input_field_to);
 
-    search_box.append(&row);
+    search_box.append(&inputs);
 
     // Create a button with label
     let button = gtk::Button::builder().label("Search!").build();
