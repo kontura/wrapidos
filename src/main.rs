@@ -94,9 +94,14 @@ fn build_ui(app: &Application) {
     search_box.append(&swap_button);
     search_box.append(&input_field_to);
 
+    let button_cont = adw::ButtonContent::builder()
+        .label("Search")
+        .icon_name("system-search-symbolic")
+        .build();
+
     // Create a button with label
     let button = gtk::Button::builder()
-        .label("Search!")
+        .child(&button_cont)
         .halign(gtk::Align::Center)
         .build();
     search_box.append(&button);
