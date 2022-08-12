@@ -36,10 +36,6 @@ fn load_css() {
 }
 
 fn build_ui(app: &Application) {
-    let search_box = gtk::Box::builder()
-        .orientation(gtk::Orientation::Vertical)
-        .build();
-
     // Create an EntryCompletion widget
     let from_stations = gtk::EntryCompletion::new();
     from_stations.set_text_column(0);
@@ -60,38 +56,23 @@ fn build_ui(app: &Application) {
     from_stations.set_model(Some(&ls_from));
     to_stations.set_model(Some(&ls_to));
 
-    let input_field_from = gtk::Entry::new();
-    input_field_from.set_completion(Some(&from_stations));
-    input_field_from.set_margin_bottom(10);
-    input_field_from.set_buffer(&gtk::EntryBuffer::new(Some("Brno,,Slovanské Náměstí")));
-
-    let input_field_to = gtk::Entry::new();
-    input_field_to.set_completion(Some(&to_stations));
-    input_field_to.set_margin_bottom(10);
-    input_field_to.set_buffer(&gtk::EntryBuffer::new(Some("Brno,,Úvoz")));
-
-    let inputs = gtk::Box::builder()
-        .orientation(gtk::Orientation::Vertical)
-        .spacing(12)
-        .margin_start(24)
-        .margin_end(24)
+    let input_field_from = gtk::Entry::builder()
+        .placeholder_text("From:")
+        .buffer(&gtk::EntryBuffer::new(Some("Brno,,Slovanské Náměstí")))
+        .completion(&from_stations)
         .build();
 
-    let from_line = Label::new(Some("From:"));
-    from_line.set_halign(gtk::Align::Start);
-    inputs.append(&from_line);
-    // Create a title label
-    inputs.append(&input_field_from);
-
-    let between_inputs_box = gtk::Box::builder()
-        .orientation(gtk::Orientation::Horizontal)
+    let input_field_to = gtk::Entry::builder()
+        .placeholder_text("To:")
+        .buffer(&gtk::EntryBuffer::new(Some("Brno,,Úvoz")))
+        .completion(&to_stations)
         .build();
 
-    let to_line = Label::new(Some("To:"));
-    //to_line.set_halign(gtk::Align::Start);
-    between_inputs_box.append(&to_line);
+    let swap_button = gtk::Button::builder()
+        .label("<-->")
+        .halign(gtk::Align::Center)
+        .build();
 
-    let swap_button = gtk::Button::builder().label("<-->").margin_start(50).build();
     let input_field_to_copy = input_field_to.clone();
     let input_field_from_copy = input_field_from.clone();
     swap_button.connect_clicked(move |_| {
@@ -100,12 +81,18 @@ fn build_ui(app: &Application) {
         input_field_from_copy.set_buffer(&tmp);
     });
 
-    between_inputs_box.append(&swap_button);
-    inputs.append(&between_inputs_box);
+    let search_box = gtk::Box::builder()
+        .orientation(gtk::Orientation::Vertical)
+        .spacing(10)
+        .margin_start(24)
+        .margin_end(24)
+        .margin_top(24)
+        .margin_bottom(24)
+        .build();
 
-    inputs.append(&input_field_to);
-
-    search_box.append(&inputs);
+    search_box.append(&input_field_from);
+    search_box.append(&swap_button);
+    search_box.append(&input_field_to);
 
     // Create a button with label
     let button = gtk::Button::builder()
