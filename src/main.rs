@@ -111,17 +111,21 @@ fn build_ui(app: &Application) {
 
     let list_box = ListBox::new();
     // Connect to "clicked" signal of `button`
-    // TODO(amatej): is there a cycle? button doesn't need to be in listbox..
     let list_box_copy = list_box.clone();
     button.connect_clicked(move |_| {
-        //TODO(amatej): clear the listbox
+        loop {
+            let row = list_box_copy.row_at_index(0);
+            match row {
+                Some(row) => list_box_copy.remove(&row),
+                None => break,
+            }
+        }
         let html = curl_idos::curl_idos(input_field_from.text().to_string(), input_field_to.text().to_string());
         let vec_of_connections = parse_idos::parse_idos(&html);
         for route in &vec_of_connections {
             list_box_copy.append(&build_route(&route));
         }
     });
-
 
     let scrolled_window = ScrolledWindow::builder()
         .hscrollbar_policy(PolicyType::Never) // Disable horizontal scrolling
