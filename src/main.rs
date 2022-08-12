@@ -143,8 +143,15 @@ fn build_ui(app: &Application) {
         // Adwaitas' ApplicationWindow does not include a HeaderBar
     content.append(&HeaderBar::new());
 
+    let scrolled_window = gtk::ScrolledWindow::builder()
+        .hscrollbar_policy(gtk::PolicyType::Never) // Disable horizontal scrolling
+        .min_content_width(360)
+        .propagate_natural_height(true)
+        .child(&list_box)
+        .build();
+
     content.append(&search_box);
-    content.append(&list_box);
+    content.append(&scrolled_window);
 
     // Create a window
     let window = ApplicationWindow::builder()
