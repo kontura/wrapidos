@@ -172,23 +172,38 @@ fn build_ui(app: &Application) {
 fn build_route(route: &Vec<parse_idos::Connection>) -> gtk::Box {
     let full_route_row = gtk::Box::builder()
         .orientation(gtk::Orientation::Vertical)
-        .spacing(12)
-        .margin_top(24)
-        .margin_bottom(24)
+        .margin_top(14)
+        .margin_bottom(14)
+        .margin_start(14)
+        .margin_end(14)
         .build();
+    //full_route_row.set_halign(gtk::Align::Start);
+    let mut first: bool = true;
     for connection in route {
+        if !first {
+            full_route_row.append(&gtk::Separator::builder().build());
+        }
         let connection_row = gtk::Box::builder()
             .orientation(gtk::Orientation::Vertical)
+            .margin_top(8)
+            .margin_bottom(8)
+            .margin_start(8)
+            .margin_end(8)
+            .vexpand_set(true)
             .build();
+        //connection_row.set_halign(gtk::Align::Start);
         let name_label = Label::new(Some(&connection.name));
         let from_label = Label::new(Some(&[connection.departure_time.clone(), connection.departure_station.clone()].join(" ")));
         let to_label = Label::new(Some(&[connection.destination_time.clone(), connection.destination_station.clone()].join(" ")));
-        from_label.set_margin_start(10);
-        to_label.set_margin_start(10);
+        name_label.set_halign(gtk::Align::Start);
+        name_label.add_css_class("route_title");
+        from_label.set_halign(gtk::Align::Start);
+        to_label.set_halign(gtk::Align::Start);
         connection_row.append(&name_label);
         connection_row.append(&from_label);
         connection_row.append(&to_label);
         full_route_row.append(&connection_row);
+        first = false;
     };
 
     return full_route_row;

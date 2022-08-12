@@ -2,13 +2,8 @@
 * {
   background-color: #99c1f1;
 }
-
-label {
-  color: white;
-}
-
-
-.blank {
-    background-color: #3584e4;
-}
 */
+
+.route_title {
+    font-weight: bold;
+}
