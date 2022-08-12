@@ -56,16 +56,14 @@ fn build_ui(app: &Application) {
     from_stations.set_model(Some(&ls_from));
     to_stations.set_model(Some(&ls_to));
 
-    let input_field_from = gtk::Entry::builder()
-        .placeholder_text("From:")
-        .buffer(&gtk::EntryBuffer::new(Some("Brno,,Slovanské Náměstí")))
-        .completion(&from_stations)
+    let input_field_from = adw::EntryRow::builder()
+        .title("From:")
+        .text("Brno,,Slovanské Náměstí")
         .build();
 
-    let input_field_to = gtk::Entry::builder()
-        .placeholder_text("To:")
-        .buffer(&gtk::EntryBuffer::new(Some("Brno,,Úvoz")))
-        .completion(&to_stations)
+    let input_field_to = adw::EntryRow::builder()
+        .title("To:")
+        .text("Brno,,Úvoz")
         .build();
 
     let swap_button = gtk::Button::builder()
@@ -76,9 +74,9 @@ fn build_ui(app: &Application) {
     let input_field_to_copy = input_field_to.clone();
     let input_field_from_copy = input_field_from.clone();
     swap_button.connect_clicked(move |_| {
-        let tmp = input_field_to_copy.buffer();
-        input_field_to_copy.set_buffer(&input_field_from_copy.buffer());
-        input_field_from_copy.set_buffer(&tmp);
+        let tmp = input_field_to_copy.text();
+        input_field_to_copy.set_text(&input_field_from_copy.text());
+        input_field_from_copy.set_text(&tmp);
     });
 
     let search_box = gtk::Box::builder()
