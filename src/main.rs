@@ -135,18 +135,16 @@ fn build_ui(app: &Application) {
     });
 
     let content = Box::new(Orientation::Vertical, 0);
-        // Adwaitas' ApplicationWindow does not include a HeaderBar
     content.append(&HeaderBar::new());
+    content.append(&search_box);
+    content.append(&list_box);
 
     let scrolled_window = gtk::ScrolledWindow::builder()
         .hscrollbar_policy(gtk::PolicyType::Never) // Disable horizontal scrolling
         .min_content_width(360)
         .propagate_natural_height(true)
-        .child(&list_box)
+        .child(&content)
         .build();
-
-    content.append(&search_box);
-    content.append(&scrolled_window);
 
     // Create a window
     let window = ApplicationWindow::builder()
@@ -154,7 +152,7 @@ fn build_ui(app: &Application) {
         .title("WrapIdos")
         .default_width(300)
         .default_height(600)
-        .content(&content)
+        .content(&scrolled_window)
         .build();
 
     // Present window
