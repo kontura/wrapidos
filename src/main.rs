@@ -108,7 +108,10 @@ fn build_ui(app: &Application) {
     search_box.append(&inputs);
 
     // Create a button with label
-    let button = gtk::Button::builder().label("Search!").build();
+    let button = gtk::Button::builder()
+        .label("Search!")
+        .halign(gtk::Align::Center)
+        .build();
     search_box.append(&button);
 
     let list_box = ListBox::builder()
