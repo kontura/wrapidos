@@ -58,12 +58,12 @@ fn build_ui(app: &Application) {
 
     let input_field_from = adw::EntryRow::builder()
         .title("From:")
-        .text("Brno,,Slovanské Náměstí")
+        .text("Brno,,Slovanske Namesti")
         .build();
 
     let input_field_to = adw::EntryRow::builder()
         .title("To:")
-        .text("Brno,,Úvoz")
+        .text("Brno,,Uvoz")
         .build();
 
     let swap_button = gtk::Button::builder()
