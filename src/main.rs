@@ -97,9 +97,10 @@ fn build_ui(app: &Application) {
     button_row.append(&button);
     button_row.append(&swap_button);
 
-    let list_box = ListBox::builder()
+    let routes_list = ListBox::builder()
         .margin_end(32)
         .margin_start(32)
+        .margin_bottom(10)
         .selection_mode(SelectionMode::None)
         .css_classes(vec![String::from("boxed-list")])
         .build();
@@ -135,7 +136,7 @@ fn build_ui(app: &Application) {
                                                          station_completion_list_current_clicked_handler_id.clone());
 
     // Connect to "clicked" signal of `button`
-    let list_box_copy = list_box.clone();
+    let list_box_copy = routes_list.clone();
     button.connect_clicked(move |_| {
         loop {
             let row = list_box_copy.row_at_index(0);
@@ -154,7 +155,7 @@ fn build_ui(app: &Application) {
     let content = Box::new(Orientation::Vertical, 0);
     content.append(&HeaderBar::new());
     content.append(&search_box);
-    content.append(&list_box);
+    content.append(&routes_list);
 
     let scrolled_window = gtk::ScrolledWindow::builder()
         .hscrollbar_policy(gtk::PolicyType::Never) // Disable horizontal scrolling
