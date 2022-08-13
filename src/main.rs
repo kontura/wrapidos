@@ -91,6 +91,7 @@ fn build_ui(app: &Application) {
     let button_row = gtk::Box::builder()
         .orientation(gtk::Orientation::Horizontal)
         .spacing(10)
+        .margin_top(10)
         .halign(gtk::Align::Center)
         .build();
 
