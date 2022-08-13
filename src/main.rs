@@ -48,6 +48,11 @@ fn build_ui(app: &Application) {
         .text("Brno,,Uvoz")
         .build();
 
+    let input_field_time = adw::EntryRow::builder()
+        .title("Time:")
+        .input_purpose(gtk::InputPurpose::Digits)
+        .build();
+
     let swap_button = gtk::Button::builder()
         .label("<-->")
         .halign(gtk::Align::Center)
@@ -118,7 +123,10 @@ fn build_ui(app: &Application) {
     }
 
 
+    //TODO(amatej): since box has spacing moving the empty station_completion_list move the
+    //inputs.. either remove spacing or ..?
     search_box.append(&station_completion_list);
+    search_box.append(&input_field_time);
     search_box.append(&button_row);
 
     entry_row_completion::setup_completion_for_entry_row(input_field_to.clone(),
@@ -140,7 +148,7 @@ fn build_ui(app: &Application) {
                 None => break,
             }
         }
-        let html = curl_idos::curl_idos(input_field_from.text().to_string(), input_field_to.text().to_string());
+        let html = curl_idos::curl_idos(input_field_from.text().to_string(), input_field_to.text().to_string(), input_field_time.text().to_string());
         let vec_of_connections = parse_idos::parse_idos(&html);
         for route in &vec_of_connections {
             list_box_copy.append(&build_route(&route));

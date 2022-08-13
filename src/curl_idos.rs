@@ -9,12 +9,15 @@ impl Handler for Collector {
     }
 }
 
-pub fn curl_idos(from: String, to: String) -> String {
+pub fn curl_idos(from: String, to: String, time: String) -> String {
     let mut easy = Easy2::new(Collector(Vec::new()));
     easy.get(true).unwrap();
     let encoded_from = urlencoding::encode(&from);
     let encoded_to = urlencoding::encode(&to);
-    let str_url = &format!("https://idos.idnes.cz/vlakyautobusymhdvse/spojeni/vysledky/?f={}&t={}", encoded_from, encoded_to);
+    let mut str_url = format!("https://idos.idnes.cz/vlakyautobusymhdvse/spojeni/vysledky/?f={}&t={}", encoded_from, encoded_to);
+    if !time.is_empty() {
+        str_url.push_str(&format!("&time={}", time));
+    }
     println!("{}", str_url);
     easy.url(&str_url).unwrap();
     easy.perform().unwrap();
