@@ -68,7 +68,6 @@ fn build_ui(app: &Application) {
 
     let search_box = gtk::Box::builder()
         .orientation(gtk::Orientation::Vertical)
-        .spacing(10)
         .margin_top(10)
         .margin_bottom(10)
         .margin_start(24)
@@ -122,9 +121,6 @@ fn build_ui(app: &Application) {
         station_completion_list.append(&sl);
     }
 
-
-    //TODO(amatej): since box has spacing moving the empty station_completion_list move the
-    //inputs.. either remove spacing or ..?
     search_box.append(&station_completion_list);
     search_box.append(&input_field_time);
     search_box.append(&button_row);
