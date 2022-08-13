@@ -3,10 +3,10 @@ use adw::prelude::*;
 
 use adw::{Application, ApplicationWindow, HeaderBar};
 use gtk::{Box, ListBox, Orientation, SelectionMode, CssProvider, StyleContext, Label};
-use gtk::glib::Type;
 
 mod curl_idos;
 mod parse_idos;
+mod entry_row_completion;
 
 const APP_ID: &str = "org.gtk_rs.WrapIdos";
 
@@ -36,25 +36,7 @@ fn load_css() {
 }
 
 fn build_ui(app: &Application) {
-    // Create an EntryCompletion widget
-    let from_stations = gtk::EntryCompletion::new();
-    from_stations.set_text_column(0);
-    from_stations.set_minimum_key_length(1);
-    from_stations.set_popup_completion(true);
-
-    let to_stations = gtk::EntryCompletion::new();
-    to_stations.set_text_column(0);
-    to_stations.set_minimum_key_length(1);
-    to_stations.set_popup_completion(true);
-
-    // Create a ListStore of items
-    // These will be the source for the autocompletion
-    // as the user types into the field
-    // For a more evolved example of ListStore see src/bin/list_store.rs
-    let ls_from = create_list_model();
-    let ls_to = create_list_model();
-    from_stations.set_model(Some(&ls_from));
-    to_stations.set_model(Some(&ls_to));
+    let list_of_stations: std::rc::Rc<String> = std::rc::Rc::new(get_list_of_stations());
 
     let input_field_from = adw::EntryRow::builder()
         .title("From:")
@@ -71,11 +53,11 @@ fn build_ui(app: &Application) {
         .halign(gtk::Align::Center)
         .build();
 
-    let input_field_to_copy = input_field_to.clone();
+    let input_field_to_for_scope = input_field_to.clone();
     let input_field_from_copy = input_field_from.clone();
     swap_button.connect_clicked(move |_| {
-        let tmp = input_field_to_copy.text();
-        input_field_to_copy.set_text(&input_field_from_copy.text());
+        let tmp = input_field_to_for_scope.text();
+        input_field_to_for_scope.set_text(&input_field_from_copy.text());
         input_field_from_copy.set_text(&tmp);
     });
 
@@ -111,16 +93,42 @@ fn build_ui(app: &Application) {
     button_row.append(&button);
     button_row.append(&swap_button);
 
-    search_box.append(&button_row);
-
     let list_box = ListBox::builder()
         .margin_end(32)
         .margin_start(32)
         .selection_mode(SelectionMode::None)
-        // makes the list look nicer
         .css_classes(vec![String::from("boxed-list")])
         .build();
+    let station_completion_list = ListBox::builder()
+        .selection_mode(SelectionMode::None)
+        .visible(false)
+        .show_separators(true)
+        .build();
+    let station_completion_list_current_clicked_handler_id: std::rc::Rc::<std::cell::RefCell<Option<gtk::glib::SignalHandlerId>>> = std::rc::Rc::new(std::cell::RefCell::new(None));
+    for station in list_of_stations.lines() {
+        let sl = Label::builder()
+            .label(&station)
+            .margin_top(10)
+            .margin_bottom(10)
+            .halign(gtk::Align::Start)
+            .margin_start(10)
+            .margin_end(10)
+            .build();
+        station_completion_list.append(&sl);
+    }
 
+
+    search_box.append(&station_completion_list);
+    search_box.append(&button_row);
+
+    entry_row_completion::setup_completion_for_entry_row(input_field_to.clone(),
+                                                         station_completion_list.clone(),
+                                                         search_box.clone(),
+                                                         station_completion_list_current_clicked_handler_id.clone());
+    entry_row_completion::setup_completion_for_entry_row(input_field_from.clone(),
+                                                         station_completion_list.clone(),
+                                                         search_box.clone(),
+                                                         station_completion_list_current_clicked_handler_id.clone());
 
     // Connect to "clicked" signal of `button`
     let list_box_copy = list_box.clone();
@@ -206,13 +214,7 @@ fn build_route(route: &Vec<parse_idos::Connection>) -> gtk::Box {
     return full_route_row;
 }
 
-fn create_list_model() -> gtk::ListStore {
-    let col_types: [Type; 2] = [Type::STRING, Type::STRING];
-    let stations = include_str!("zastavky.csv").lines();
-    let store = gtk::ListStore::new(&col_types);
-    for d in stations {
-        let new_string = diacritics::remove_diacritics(d);
-        store.set(&store.append(), &[(0, &new_string), (1, &d)]);
-    }
-    store
+fn get_list_of_stations() -> String {
+    let stations = include_str!("zastavky.csv").to_string();
+    diacritics::remove_diacritics(&stations).to_ascii_lowercase()
 }
