@@ -82,14 +82,13 @@ fn build_ui(app: &Application) {
     let search_box = gtk::Box::builder()
         .orientation(gtk::Orientation::Vertical)
         .spacing(10)
+        .margin_top(10)
+        .margin_bottom(10)
         .margin_start(24)
         .margin_end(24)
-        .margin_top(24)
-        .margin_bottom(24)
         .build();
 
     search_box.append(&input_field_from);
-    search_box.append(&swap_button);
     search_box.append(&input_field_to);
 
     let button_cont = adw::ButtonContent::builder()
@@ -102,12 +101,20 @@ fn build_ui(app: &Application) {
         .child(&button_cont)
         .halign(gtk::Align::Center)
         .build();
-    search_box.append(&button);
+
+    let button_row = gtk::Box::builder()
+        .orientation(gtk::Orientation::Horizontal)
+        .spacing(10)
+        .halign(gtk::Align::Center)
+        .build();
+
+    button_row.append(&button);
+    button_row.append(&swap_button);
+
+    search_box.append(&button_row);
 
     let list_box = ListBox::builder()
-        .margin_top(32)
         .margin_end(32)
-        .margin_bottom(32)
         .margin_start(32)
         .selection_mode(SelectionMode::None)
         // makes the list look nicer
