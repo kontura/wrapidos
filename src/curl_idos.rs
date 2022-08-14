@@ -9,17 +9,17 @@ impl Handler for Collector {
     }
 }
 
-pub fn curl_idos(mut from: String, mut to: String, time: String) -> String {
+pub fn curl_idos(from: String, to: String, time: String) -> String {
     let mut easy = Easy2::new(Collector(Vec::new()));
     easy.get(true).unwrap();
     let mut params = String::new();
-    if from.starts_with("Brno,") {
-        params.push_str("&fc=302003");
-        from = from.trim_start_matches("Brno,").to_string();
+    let from_low = from.to_ascii_lowercase();
+    if from_low.starts_with("brno,") {
+        params.push_str("&fc=8");
     }
-    if to.starts_with("Brno,") {
-        params.push_str("&tc=302003");
-        to = to.trim_start_matches("Brno,").to_string();
+    let to_low = to.to_ascii_lowercase();
+    if to_low.starts_with("brno,") {
+        params.push_str("&tc=8");
     }
     let encoded_from = urlencoding::encode(&from);
     let encoded_to = urlencoding::encode(&to);

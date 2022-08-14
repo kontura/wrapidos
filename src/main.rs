@@ -40,12 +40,12 @@ fn build_ui(app: &Application) {
 
     let input_field_from = adw::EntryRow::builder()
         .title("From:")
-        .text("Brno,Slovanske Namesti")
+        .text("Brno, Slovanské Náměstí")
         .build();
 
     let input_field_to = adw::EntryRow::builder()
         .title("To:")
-        .text("Brno,Uvoz")
+        .text("Brno, Úvoz")
         .build();
 
     let input_field_time = adw::EntryRow::builder()
