@@ -1,5 +1,6 @@
 use gtk::gdk::Display;
 use adw::prelude::*;
+use gtk::glib::MainContext;
 
 use adw::{Application, ApplicationWindow, HeaderBar};
 use gtk::{Box, ListBox, Orientation, SelectionMode, CssProvider, StyleContext, Label};
@@ -139,18 +140,26 @@ fn build_ui(app: &Application) {
     // Connect to "clicked" signal of `button`
     let list_box_copy = routes_list.clone();
     button.connect_clicked(move |_| {
-        loop {
-            let row = list_box_copy.row_at_index(0);
-            match row {
-                Some(row) => list_box_copy.remove(&row),
-                None => break,
+        let main_context = MainContext::default();
+        let list_box_copy2 = list_box_copy.clone();
+        let input_field_from_copy = input_field_from.clone();
+        let input_field_to_copy = input_field_to.clone();
+        let input_field_time_copy = input_field_time.clone();
+        main_context.spawn_local(async move {
+            loop {
+                let row = list_box_copy2.row_at_index(0);
+                match row {
+                    Some(row) => list_box_copy2.remove(&row),
+                    None => break,
+                }
             }
-        }
-        let html = curl_idos::curl_idos(input_field_from.text().to_string(), input_field_to.text().to_string(), input_field_time.text().to_string());
-        let vec_of_connections = parse_idos::parse_idos(&html);
-        for route in &vec_of_connections {
-            list_box_copy.append(&build_route(&route));
-        }
+            let html = curl_idos::curl_idos(input_field_from_copy.text().to_string(), input_field_to_copy.text().to_string(), input_field_time_copy.text().to_string());
+            let vec_of_connections = parse_idos::parse_idos(&html);
+            for route in &vec_of_connections {
+                list_box_copy2.append(&build_route(&route));
+            }
+
+        });
     });
 
     let content = Box::new(Orientation::Vertical, 0);
