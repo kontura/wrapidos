@@ -8,12 +8,12 @@ pub struct Connection {
 }
 
 
-pub fn parse_idos(html: &String) -> Vec<Vec<Connection>> {
+pub fn parse_idos(html: &String) -> Option<Vec<Vec<Connection>>> {
     let dom = html_parser::Dom::parse(&html).unwrap();
     let connection_list = recusively_find_element_by_class(&dom.children, "connection-list");
     let cn = match connection_list {
         Some(ref element) => element,
-        None => panic!("while parsing didn't find connection-list in web result")
+        None => return None
     };
 
     let mut con_cons: Vec<Vec<Connection>> = Vec::new();
@@ -30,7 +30,7 @@ pub fn parse_idos(html: &String) -> Vec<Vec<Connection>> {
         };
     };
 
-    return con_cons;
+    return Some(con_cons);
 }
 
 fn parse_connections(element: &html_parser::Element) -> Vec<Connection> {

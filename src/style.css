@@ -7,3 +7,7 @@
 .route_title {
     font-weight: bold;
 }
+
+.err {
+    color: red;
+}

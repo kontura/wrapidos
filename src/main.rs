@@ -158,9 +158,24 @@ fn build_ui(app: &Application) {
                                                input_field_time_copy.text().to_string()).await;
             match reqwest {
                 Ok(html) => {
-                    let vec_of_connections = parse_idos::parse_idos(&html);
-                    for route in &vec_of_connections {
-                        list_box_copy2.append(&build_route(&route));
+                    let parsed = parse_idos::parse_idos(&html);
+                    match parsed {
+                        Some(vec_of_connections) => {
+                            for route in &vec_of_connections {
+                                list_box_copy2.append(&build_route(&route));
+                            }
+                        }
+                        None => {
+                            let sl = Label::builder()
+                                .label("No connection found!")
+                                .margin_top(10)
+                                .margin_bottom(10)
+                                .margin_start(10)
+                                .css_classes(vec![String::from("err")])
+                                .margin_end(10)
+                                .build();
+                            list_box_copy2.append(&sl);
+                        }
                     }
                 }
                 Err(error) => {
