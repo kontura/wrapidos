@@ -153,12 +153,28 @@ fn build_ui(app: &Application) {
                     None => break,
                 }
             }
-            let html = curl_idos::curl_idos(input_field_from_copy.text().to_string(), input_field_to_copy.text().to_string(), input_field_time_copy.text().to_string());
-            let vec_of_connections = parse_idos::parse_idos(&html);
-            for route in &vec_of_connections {
-                list_box_copy2.append(&build_route(&route));
+            let reqwest = curl_idos::curl_idos(input_field_from_copy.text().to_string(),
+                                               input_field_to_copy.text().to_string(),
+                                               input_field_time_copy.text().to_string()).await;
+            match reqwest {
+                Ok(html) => {
+                    let vec_of_connections = parse_idos::parse_idos(&html);
+                    for route in &vec_of_connections {
+                        list_box_copy2.append(&build_route(&route));
+                    }
+                }
+                Err(error) => {
+                    let sl = Label::builder()
+                        .label(&format!("{}", error))
+                        .margin_top(10)
+                        .margin_bottom(10)
+                        .halign(gtk::Align::Start)
+                        .margin_start(10)
+                        .margin_end(10)
+                        .build();
+                    list_box_copy2.append(&sl);
+                }
             }
-
         });
     });
 
