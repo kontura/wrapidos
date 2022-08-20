@@ -139,12 +139,14 @@ fn build_ui(app: &Application) {
 
     // Connect to "clicked" signal of `button`
     let list_box_copy = routes_list.clone();
-    button.connect_clicked(move |_| {
+    button.connect_clicked(move |button| {
+        button.set_sensitive(false);
         let main_context = MainContext::default();
         let list_box_copy2 = list_box_copy.clone();
         let input_field_from_copy = input_field_from.clone();
         let input_field_to_copy = input_field_to.clone();
         let input_field_time_copy = input_field_time.clone();
+        let button_copy = button.clone();
         main_context.spawn_local(async move {
             loop {
                 let row = list_box_copy2.row_at_index(0);
@@ -153,10 +155,10 @@ fn build_ui(app: &Application) {
                     None => break,
                 }
             }
-            let reqwest = curl_idos::curl_idos(input_field_from_copy.text().to_string(),
+            let request = curl_idos::curl_idos(input_field_from_copy.text().to_string(),
                                                input_field_to_copy.text().to_string(),
                                                input_field_time_copy.text().to_string()).await;
-            match reqwest {
+            match request {
                 Ok(html) => {
                     let parsed = parse_idos::parse_idos(&html);
                     match parsed {
@@ -190,6 +192,7 @@ fn build_ui(app: &Application) {
                     list_box_copy2.append(&sl);
                 }
             }
+            button_copy.set_sensitive(true);
         });
     });
 
